@@ -122,6 +122,12 @@
             keyword: 'xiutaku',
             nextLink: 'nav:first-of-type span:has(a.pagination-link.is-current) ~span a',
             pageElement: 'div.article-fulltext',
+        },
+        {
+            name: '4khd',
+            keyword: '4khd',
+            nextLink: 'li.current ~ li a',
+            pageElement: 'div.wp-block-post-content > p',
         }
     ]
 
