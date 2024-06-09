@@ -126,13 +126,19 @@
       this.contentSelector = contentSelector;
       this.nextLinkSelector = nextLinkSelector;
       this.paginationSelector = paginationSelector || nextLinkSelector;
+      if (this.paginationSelector == this.nextLinkSelector) {
+        add_pagination_style(document);
+      }
       this.updateElement();
       this.observer = null;
+      this.numPage = 1;
 
-      const nextPageLink = this.nextLinkElement.getAttribute("href");
-      if (nextPageLink) {
-        console.info(`Prefetch ${nextPageLink}`);
-        this.request = fetch(nextPageLink).then((response) => response.text());
+      this.nextPageLink = this.nextLinkElement.getAttribute("href");
+      if (this.nextPageLink) {
+        console.info(`Prefetch ${this.nextPageLink}`);
+        this.request = fetch(this.nextPageLink).then((response) =>
+          response.text()
+        );
         this.initObserver();
       } else {
         console.log("Don't find next page link");
@@ -179,6 +185,14 @@
           // Extract new content
           const newContent = doc.querySelector(this.contentSelector);
           if (newContent) {
+            if (this.nextLinkSelector === this.paginationSelector) {
+              const pagination = create_pagination(
+                this.numPage,
+                this.nextPageLink
+              );
+              this.contentElement.appendChild(pagination);
+            }
+
             // Append each child of the new content to the current content element
             Array.from(newContent.children).forEach((child) => {
               this.contentElement.appendChild(child);
@@ -192,6 +206,7 @@
           );
           if (newNextLinkElement && newPaginationElement) {
             this.observer.unobserve(this.nextLinkElement);
+            this.numPage += 1;
 
             if (this.nextLinkSelector != this.paginationSelector) {
               this.paginationElement.replaceWith(newPaginationElement);
@@ -203,10 +218,10 @@
             }
             this.updateElement();
 
-            const nextPageLink = this.nextLinkElement.getAttribute("href");
-            if (nextPageLink) {
-              console.info(`Prefetch ${nextPageLink}`);
-              this.request = fetch(nextPageLink).then((response) =>
+            this.nextPageLink = this.nextLinkElement.getAttribute("href");
+            if (this.nextPageLink) {
+              console.info(`Prefetch ${this.nextPageLink}`);
+              this.request = fetch(this.nextPageLink).then((response) =>
                 response.text()
               );
               // Reobserve the new pagination element
@@ -260,10 +275,9 @@
       },
       {
         name: "jpxgmn",
-        url: "",
-        head: {
-          title: ".*xgmn.*",
-        },
+        url: "^https?://(www\\.)?jpxgmn\\.(com|[^/]*workers\\.dev)/[^/]*/[^/]*\\.html",
+        nextLink: " div.content:nth-child(6)  a.current ~ a",
+        pageElement: "div.content:has(p)",
       },
     ];
 
