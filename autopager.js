@@ -179,6 +179,10 @@
     loadMoreContent() {
       this.request
         .then((html) => {
+          try {
+            window.history.pushState(null, '', this.nextPageLink);
+          } catch (error) {
+          }
           const parser = new DOMParser();
           const doc = parser.parseFromString(html, "text/html");
 
