@@ -268,7 +268,7 @@
         name: "4khd",
         url: "^https?://(www\\.)?4khd\\.(com|[^/]*workers\\.dev)/.*\\.html$",
         nextLinks: "li.current ~ li a",
-        pageElement: "div.wp-block-post-content > p",
+        pageElement: "div.wp-block-post-content>p:has(>a)",
       },
       {
         name: "4khd post list",
