@@ -266,7 +266,7 @@
       },
       {
         name: "4khd",
-        url: "^https?://(www\\.)?4khd\\.(com|[^/]*workers\\.dev)/.*\\.html$",
+        url: "^https?://(www\\.)?4khd\\.(com|[^/]*workers\\.dev)/.*\\.html\/?$",
         nextLinks: "li.current ~ li a",
         pageElement: "div.wp-block-post-content>p:has(>a)",
       },
