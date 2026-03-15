@@ -283,6 +283,13 @@
         nextLink: " div.content:nth-child(6)  a.current ~ a",
         pageElement: "div.content:has(p)",
       },
+      {
+        name: "tuao.cc article",
+        url: "^https?://(www\\.)?tuao\\.cc/Articles/Content/\\d+(_\\d+)?\\.html$",
+        rawContent: "#rawContent",
+        pageElement: "#pageContainer",
+        paginationElement: "#pagination",
+      },
     ];
 
     let config = null;
@@ -322,7 +329,58 @@
       }
     }
     if (config) {
-      if ("nextLinks" in config) {
+      if ("rawContent" in config) {
+        // Client-side paginated: all images are already in the DOM, just render them all.
+        // Use a MutationObserver to trigger as soon as the site's own script populates the container.
+        console.log("Autopager client-side all-images mode");
+        const raw = document.querySelector(config.rawContent);
+        const container = document.querySelector(config.pageElement);
+        const paginationEl = config.paginationElement
+          ? document.querySelector(config.paginationElement)
+          : null;
+        if (!raw || !container) return;
+
+        function renderAll() {
+          const imgs = raw.querySelectorAll("img");
+          if (!imgs.length) return;
+
+          if (paginationEl) paginationEl.style.display = "none";
+
+          const wrapper = document.createElement("div");
+          wrapper.style.cssText = "text-align:center;padding:10px";
+          imgs.forEach((img) => {
+            const src =
+              img.getAttribute("data-original") ||
+              img.getAttribute("data-src") ||
+              img.getAttribute("src") ||
+              "";
+            if (!src) return;
+            const div = document.createElement("div");
+            div.style.marginBottom = "10px";
+            const el = document.createElement("img");
+            el.src = src;
+            el.loading = "lazy";
+            el.style.cssText = "max-width:100%;display:block;margin:0 auto";
+            div.appendChild(el);
+            wrapper.appendChild(div);
+          });
+          container.innerHTML = "";
+          container.appendChild(wrapper);
+          console.log(`Autopager rendered ${imgs.length} images`);
+        }
+
+        if (container.children.length > 0) {
+          renderAll();
+        } else {
+          const observer = new MutationObserver(() => {
+            if (container.children.length > 0) {
+              observer.disconnect();
+              renderAll();
+            }
+          });
+          observer.observe(container, { childList: true });
+        }
+      } else if ("nextLinks" in config) {
         console.log("Autopager fetch-all mode");
         fetch_all(config.nextLinks, config.pageElement).then(() => {
           console.log("Autopager is done");
