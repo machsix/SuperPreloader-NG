@@ -252,34 +252,48 @@
     const database = [
       {
         name: "xiutaku",
-        url: "^https?://(www\\.)?xiutaku\\.(com|[^/]*workers\\.dev)/\\d+(\\?page=\\d+)?$",
+        url: "^https?://(www\\.)?xiutaku\\.com/\\d+(\\?page=\\d+)?$",
         nextLinks:
           "nav:first-of-type span:has(a.pagination-link.is-current) ~span a",
         pageElement: "div.article-fulltext",
       },
       {
         name: "xiutaku post list",
-        url: "^https?://(www\\.)?xiutaku\\.(com|[^/]*workers\\.dev)/([^\\d].*)?$",
+        url: "^https?://(www\\.)?xiutaku\\.com/([^\\d].*)?$",
+        nextLink: "a.pagination-next",
+        pagination: "nav.pagination",
+        pageElement: "div.blog ~.blog",
+      },
+      {
+        name: "buondua",
+        url: "^https?://(www\\.)?buondua\\.com/\\d+(\\?page=\\d+)?$",
+        nextLinks:
+          "nav:first-of-type li:has(a.pagination-link.is-current) ~li a",
+        pageElement: "div.article-fulltext",
+      },
+      {
+        name: "buondua post list",
+        url: "^https?://(www\\.)?buondua\\.com/([^\\d].*)?$",
         nextLink: "a.pagination-next",
         pagination: "nav.pagination",
         pageElement: "div.blog ~.blog",
       },
       {
         name: "4khd",
-        url: "^https?://(www\\.)?4khd\\.(com|[^/]*workers\\.dev)/.*\\.html\/?$",
+        url: "^https?://(www\\.)?4khd\\.com/.*\\.html\/?$",
         nextLinks: "li.current ~ li a",
         pageElement: "div.wp-block-post-content :has(>a.imageLink)",
       },
       {
         name: "4khd post list",
-        url: "^https?://(www\\.)?4khd\\.(com|[^/]*workers\\.dev)(/(pages|search|\\?query).*)?",
+        url: "^https?://(www\\.)?4khd\\.com(/(pages|search|\\?query).*)?",
         nextLink: "span.current~a",
         pagination: "nav.wp-block-query-pagination",
         pageElement: "ul:has(li.wp-block-post)",
       },
       {
         name: "jpxgmn",
-        url: "^https?://(www\\.)?jpxgmn\\.(com|[^/]*workers\\.dev)/[^/]*/[^/]*\\.html",
+        url: "^https?://(www\\.)?jpxgmn\\.com/[^/]*/[^/]*\\.html",
         nextLink: " div.content:nth-child(6)  a.current ~ a",
         pageElement: "div.content:has(p)",
       },
